@@ -13,6 +13,12 @@
 
     <!-- CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+<script>
+  window.isLoggedIn = @json(Auth::check());
+  window.authUserName = @json(Auth::user()->name ?? null);
+  window.authUserEmail = @json(Auth::user()->email ?? null);
+</script>
 </head>
 
 <body>
@@ -251,14 +257,14 @@
   <div class="products-grid">
     <div class="product-item">
       <div class="product-image">
-        <img src="https://i.pinimg.com/1200x/ae/0a/f7/ae0af76977e2e220170d52ea4e508afd.jpg" alt="Bayam Ungu">
+        <img src="https://i.pinimg.com/1200x/ae/0a/f7/ae0af76977e2e220170d52ea4e508afd.jpg" alt="Bayem Ungu">
         <div class="product-actions">
           <button class="action-btn"><i class="fa-regular fa-heart"></i></button>
           <button class="action-btn"><i class="fa-regular fa-eye"></i></button>
         </div>
         <div class="discount-badge">Sale 50%</div>
       </div>
-      <p>Bayam Ungu 500g</p>
+      <p>Bayem Ungu 500g</p>
       <span class="price">Rp. 12,000 <del>Rp. 24,000</del></span>
       <div class="rating">
         <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -480,8 +486,99 @@
     <i class="fa-solid fa-circle-info"></i>
     <span>Silakan login terlebih dahulu</span>
 </div>
-<!-- JS -->
-<script src="{{ asset('js/BeforeLogin.js') }}"></script>
+</div>
+<!-- PRODUCT VIEW POPUP -->
+<div id="viewPopup" class="popup-overlay ios" aria-hidden="true">
+    <div class="ios-card view-card">
+        <button type="button" class="view-close" id="closeViewPopup" aria-label="Close detail">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
+        <div class="view-layout">
+            <div class="view-gallery">
+                <div class="view-badge" id="viewBadge">Detail Produk</div>
+                <img id="viewMainImage" src="" alt="Product image" class="view-main-image">
+
+                <div class="view-mini-info">
+                    <div class="mini-info">
+                        <span>Harga</span>
+                        <strong id="viewPrice">Rp. 0</strong>
+                    </div>
+                    <div class="mini-info">
+                        <span>Diskon</span>
+                        <strong id="viewDiscount">-</strong>
+                    </div>
+                    <div class="mini-info">
+                        <span>Rating</span>
+                        <strong id="viewRating">★★★★★</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-info">
+                <h2 id="viewTitle">Nama Produk</h2>
+                <p id="viewDesc" class="view-desc">
+                    Deskripsi produk akan muncul di sini.
+                </p>
+
+                <div class="view-price-row">
+                    <span id="viewNewPrice" class="view-new-price">Rp. 0</span>
+                    <del id="viewOldPrice" class="view-old-price"></del>
+                </div>
+                <div class="view-section">
+                    <h4>Informasi Produk</h4>
+                    <p id="viewMoreInfo">
+                        Produk pilihan dengan kualitas segar dan cocok untuk kebutuhan harian.
+                    </p>
+                </div>
+
+                <div class="view-section">
+                    <h4>Pilih Aksi</h4>
+                    <div class="view-actions">
+                        <button type="button" class="view-btn outline" id="viewCartBtn">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            Add to Cart
+                        </button>
+                        <button type="button" class="view-btn solid" id="viewBuyBtn">
+                            <i class="fa-solid fa-bolt"></i>
+                            Buy Now
+                        </button>
+                    </div>
+                    <p class="view-note">
+                        Untuk menambahkan ke keranjang atau membeli, silakan login terlebih dahulu.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- CART POPUP -->
+<div id="cartPopup" class="popup-overlay ios" aria-hidden="true">
+    <div class="ios-card cart-card">
+        <button type="button" class="view-close cart-close" id="closeCartPopup" aria-label="Close cart">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="cart-header">
+            <h2>Keranjang Saya (<span id="cartCountLabel">0</span>)</h2>
+            <button type="button" class="cart-back-link" id="backFromCartBtn">Back</button>
+        </div>
+
+        <div class="cart-body">
+            <div id="cartItems" class="cart-items"></div>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-summary">
+                <span id="cartSummaryText">0 Product</span>
+                <strong id="cartTotalText">Rp. 0</strong>
+            </div>
+
+            <button type="button" class="cart-checkout-btn" id="checkoutCartBtn">
+                Checkout
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
